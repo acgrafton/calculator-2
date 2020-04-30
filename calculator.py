@@ -3,49 +3,56 @@
 from arithmetic import (add, subtract, multiply, divide, square, cube,
                         power, mod, )
 
+from functools import reduce
+
 def run_prefix_calculator():
+
     while True:
-        command_string = input(">\n").lower()
-        # print("str", command_string)
+        input_string = input(">\n").lower()
         
-        command_list = command_string.split(" ")
-        # print("list", command_list)
-        operator = command_list[0]
-
-        if operator == "q":
-            break
-        
-        x = float(command_list[1])
-
-        if operator == "square":
-            print(square(x))
-
-        elif operator == "cube":
-            print(cube(x))
+        tokens = input_string.split(" ")
+        operator, *nums = tokens
 
         try:
-            y = float(command_list[2])
+            for i, num in enumerate(nums):
+                num = float(num)
+                nums.pop(i)
+                nums.insert(i,num)
 
-        except IndexError:
+        except ValueError:
+            print("Invalid entry.")
             continue
 
-        if operator == "+":
-            print(add(x,y))
+        result = None
+
+        if operator.lower() == "q":
+            break
+
+        elif operator == "+":
+            result = reduce(add,nums)
 
         elif operator == "-":
-            print(subtract(x,y))
+            result = reduce(subtract,nums)
 
         elif operator == "*":
-            print(multiply(x,y))
+            result = reduce(multiply,nums)
 
         elif operator == "/":
-            print(divide(x,y))
+            result = reduce(divide,nums)
+
+        elif operator == "square":
+            result = reduce(square,nums)
+
+        elif operator == "cube":
+            result = reduce(cube,nums)
 
         elif operator == "pow":
-            print(power(x,y))
+            result = reduce(power,nums)
 
         elif operator == "mod":
-            print(mod(x,y))
+            result = reduce(mod,nums)
+
+        print(result)
 
 
 run_prefix_calculator()
